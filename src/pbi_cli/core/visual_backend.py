@@ -14,6 +14,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from pbi_cli.core.classification import LABEL_VISUAL_NAME
 from pbi_cli.core.errors import PbiCliError, VisualTypeError
 from pbi_cli.core.field_resolver import (
     AGGREGATE_FUNCTIONS,
@@ -814,8 +815,8 @@ def _next_y_position(definition_path: Path, page_name: str) -> float:
 
     max_bottom = 50.0
     for vdir in visuals_dir.iterdir():
-        if not vdir.is_dir():
-            continue
+        if not vdir.is_dir() or vdir.name == LABEL_VISUAL_NAME:
+            continue  # the classification label stays on top, outside the flow
         vfile = vdir / "visual.json"
         if not vfile.exists():
             continue
@@ -839,8 +840,8 @@ def _next_z_order(definition_path: Path, page_name: str) -> int:
 
     max_z = -1
     for vdir in visuals_dir.iterdir():
-        if not vdir.is_dir():
-            continue
+        if not vdir.is_dir() or vdir.name == LABEL_VISUAL_NAME:
+            continue  # the classification label stays on top, outside the flow
         vfile = vdir / "visual.json"
         if not vfile.exists():
             continue

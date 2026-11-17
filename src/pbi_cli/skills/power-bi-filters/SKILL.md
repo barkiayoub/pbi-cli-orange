@@ -23,8 +23,8 @@ Filters do not change the look of the page, but they decide what the numbers mea
   only 2 header slicer slots (`slc_1`, `slc_2`; see power-bi-orange-dashboard).
 - **Say the scope in the text.** A TopN or date filter must appear in the visual
   title ("Top 10 produits par CA") or in the footer ("Données : 30 derniers jours").
-- **Recompute after filtering.** When a filter changes what the headline, KPI
-  captions or takeaway bar describe, re-run the DAX that produced those numbers
+- **Recompute after filtering.** When a filter changes what the title, KPI
+  comparison cards or insight bar describe, re-run the DAX that produced those numbers
   with the same filter and update the text.
 
 ## Listing Filters

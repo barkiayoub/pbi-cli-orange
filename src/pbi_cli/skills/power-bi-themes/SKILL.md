@@ -29,9 +29,9 @@ Brand palette (the only colours allowed anywhere):
 
 | Token | Hex | Role |
 |---|---|---|
-| Accent | `#FF7900` | Key series, hero KPI values, page number, takeaway stripe |
-| Ink | `#111111` | Headlines, titles, takeaway bar |
-| Body | `#555555` | Labels, axes, secondary series |
+| Accent | `#FF7900` | Primary measure (AC), accent bars, insight stripe; as text only on black (page number, label) |
+| Ink | `#111111` | Titles, KPI values, PL/target lines, footer band |
+| Body | `#555555` | Labels, axes, PY series |
 | Canvas | `#EFEFEF` | Page background, grid lines, neutral cells |
 | Card | `#FFFFFF` | Visual tiles |
 | Accent tint | `#FFF1E5` | Highlighted target cells |

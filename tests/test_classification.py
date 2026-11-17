@@ -53,6 +53,21 @@ def test_add_page_inserts_label(definition: Path) -> None:
     assert data["position"]["y"] == 1028
 
 
+def test_label_stays_on_top_and_outside_auto_layout(definition: Path) -> None:
+    # auto-placement on a fresh page ignores the footer label (starts at the top)
+    auto = visual_add(definition, "synthese", "card", name="kpi_1")
+    assert auto["y"] == 70
+    # a full-bleed footer band added later must still sit below the label
+    band = visual_add(
+        definition, "synthese", "shape", name="ftr_band", x=0, y=1008, width=1920, height=72
+    )
+    label = json.loads(_label_file(definition).read_text(encoding="utf-8"))
+    for name in (band["name"], auto["name"]):
+        vfile = definition / "pages" / "synthese" / "visuals" / name / "visual.json"
+        z = json.loads(vfile.read_text(encoding="utf-8"))["position"]["z"]
+        assert z < label["position"]["z"]
+
+
 def test_new_report_page_validates(definition: Path) -> None:
     assert report_validate(definition)["valid"] is True
     assert validate_report_full(definition)["valid"] is True

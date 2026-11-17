@@ -26,8 +26,8 @@ Every page of an Orange dashboard:
 - has the **`#EFEFEF` canvas**: run `pbi report set-background <page> --color "#EFEFEF"`
   (the Orange theme also sets it; set it explicitly anyway);
 - carries the full anatomy from **power-bi-orange-dashboard**: kicker, conclusion
-  headline, KPI row, body visuals, black takeaway bar, footer and two-digit orange
-  page number;
+  title (measure · unit · period), KPI band with comparisons, body visuals,
+  insight bar, black footer band with two-digit orange page number;
 - carries the **Orange Restricted** label (`cls_restricted`, `#FF7900`). `add-page`
   inserts it automatically. It is read-only: never edit or remove it. On pages
   created outside pbi-cli, run `pbi report apply-classification`. Hidden
@@ -37,7 +37,7 @@ Every page of an Orange dashboard:
   page numbers start at `01`.
 
 Drillthrough and tooltip pages are hidden. They still use the canvas colour and
-fonts, but they do not need the takeaway bar.
+fonts, but they do not need the insight bar.
 
 ## Listing and Inspecting Pages
 

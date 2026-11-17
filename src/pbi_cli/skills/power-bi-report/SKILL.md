@@ -22,7 +22,7 @@ for most operations.
 
 > **House style is mandatory.** This toolkit only produces dashboards in the
 > Orange design system defined in **power-bi-orange-dashboard**: the theme, a
-> 1920×1080 `#EFEFEF` page, the kicker/headline/KPI/body/takeaway/footer
+> 1920×1080 `#EFEFEF` page, the header/KPI band/body/insight bar/footer band
 > anatomy, and the approved visual types. Load that skill before creating or
 > changing any report. Apply the Orange theme right after `report create`.
 
@@ -223,11 +223,11 @@ pbi report --no-sync add-page --display-name "Synthèse" --name synthese --width
 pbi report --no-sync set-background synthese --color "#EFEFEF"
 
 # 4. Place the page anatomy on the grid (power-bi-visuals)
-pbi visual --no-sync add --page synthese --type textbox --name hdr_kicker   --x 64 --y 40 --width 1792 --height 40
-pbi visual --no-sync add --page synthese --type textbox --name hdr_headline --x 64 --y 80 --width 1792 --height 64
-pbi visual --no-sync add --page synthese --type card --name kpi_1 --x 64 --y 168 --width 430 --height 152
-pbi visual --no-sync add --page synthese --type bar  --name viz_1 --x 64 --y 344 --width 884 --height 572
-# ... remaining tiles, body visuals, takeaway bar and footer per the grid
+pbi visual --no-sync add --page synthese --type textbox --name hdr_kicker --x 48 --y 48 --width 1824 --height 24
+pbi visual --no-sync add --page synthese --type textbox --name hdr_title  --x 48 --y 72 --width 1824 --height 48
+pbi visual --no-sync add --page synthese --type card --name kpi_1 --x 48 --y 152 --width 444 --height 112
+pbi visual --no-sync add --page synthese --type bar  --name viz_1 --x 48 --y 320 --width 904 --height 576
+# ... comparison cards, accents, body visuals, insight bar and footer band per the grid
 
 # 5. Bind data (power-bi-visuals)
 pbi visual --no-sync bind kpi_1 --page synthese --field "Sales[Total Revenue]"
@@ -236,7 +236,7 @@ pbi visual --no-sync bind viz_1 --page synthese --category "Geo[Region]" --value
 # 6. Write the textbox/shape recipes into the decorative visual.json files
 
 # 7. Validate (this skill) and reload Desktop once
-pbi report validate
+pbi report validate --full
 pbi report reload
 ```
 
@@ -254,7 +254,7 @@ pbi measure create "Total Revenue" -e "SUM(Sales[Amount])" -t Sales
 
 # Report layer (no connection needed)
 pbi report create . --name "Sales"
-pbi visual add --page synthese --type card --name kpi_1 --x 64 --y 168 --width 430 --height 152
+pbi visual add --page synthese --type card --name kpi_1 --x 48 --y 152 --width 444 --height 112
 pbi visual bind kpi_1 --page synthese --field "Sales[Total Revenue]"
 ```
 

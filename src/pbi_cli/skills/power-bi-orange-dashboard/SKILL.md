@@ -1,178 +1,262 @@
 ---
 name: Power BI Orange Dashboard
 description: >
-  House design system for every Power BI dashboard built with pbi-cli: Orange
-  #FF7900 accent, Arial, flat white tiles on a #EFEFEF canvas, conclusion
-  headline, black takeaway bar, numbered footer, and a locked "Orange
-  Restricted" label on every sheet. Invoke this
-  skill FIRST whenever the user asks to build, design, brand, restyle or review
-  a dashboard, KPI tiles, executive overview or scorecard, or says "Orange
-  style", "house style", "charte graphique", "tableau de bord". Every layout,
-  visual, theme and colour decision must follow it. The other report skills
-  supply the commands.
+  Senior dashboard-design standard for every Power BI dashboard built with
+  pbi-cli, in the Orange brand. Combines international standards (IBCS
+  notation, WCAG 2.2 AA accessibility, Microsoft Power BI report-design
+  guidance, Few/Tufte data-ink principles) with the Orange identity: #FF7900
+  accent, Arial, white tiles on a #EFEFEF canvas, 8-pt grid, black footer band
+  and a locked "Orange Restricted" label on every sheet. Invoke this skill FIRST
+  whenever the user asks to build, design, brand, restyle, review or audit a
+  dashboard, KPI tiles, executive overview, scorecard or "tableau de bord", or
+  says "Orange style", "house style", "charte graphique". The other report
+  skills supply the commands.
 tools: pbi-cli
 ---
 
-# Power BI Orange Dashboard Skill
+# Power BI Orange Dashboard — Design Standard
 
-This repository produces **one kind of output: Power BI dashboards in the Orange
-house style**. The style is the presentation style used for the decks "Modèle
-Churn Recharge – Performance" and "Google My Business – Avis Google Maps",
-transposed to a Power BI page. Apply it exactly. Do not invent colours, fonts,
-layouts or visual types. If the user asks for a different look, say that this
-toolkit is locked to the Orange style and ask before deviating.
+Work as a senior dashboard designer. A dashboard is a decision tool, not a
+poster. Every pixel has to help a named reader answer a known question in
+seconds. This standard combines the following, and resolves their conflicts
+in favour of **legibility and truth first, brand second**:
 
-## Workflow
+| Standard | What it governs here |
+|---|---|
+| **IBCS** (International Business Communication Standards: SAY, UNIFY, CONDENSE, CHECK, EXPRESS, SIMPLIFY, STRUCTURE) | Titles, units, scenario notation, chart choice, scaling |
+| **WCAG 2.2 AA** / Microsoft accessible-report guidance | Contrast, colour independence, alt text, tab order, minimum text size |
+| **Microsoft Power BI design guidance** | Visual budget per page, slicer use, interaction, performance |
+| **Few / Tufte** (data-ink, 5-second rule) | Remove chart junk; label directly; one glance shows the status |
+| **Orange brand** (deck style "Modèle Churn Recharge", "Google My Business") | Colours, Arial, flat rectangles, the orange accent bar, black band |
 
-1. **Gather the content first.** Read the model with `pbi --json table list`,
-   `pbi --json measure list` and `pbi --json column list -t <table>`. Decide the
-   one message of each page before placing anything.
-2. **Compute every number in code; never estimate.** Any figure written into a
-   headline, KPI caption or takeaway bar comes from a `pbi dax execute` result.
-   Measures behind KPI tiles must exist (see power-bi-modeling) and carry a
-   format string.
-3. **Scaffold** (power-bi-report): `pbi report create`, then write the theme
-   below to `orange-dashboard-theme.json` and `pbi report --no-sync set-theme`.
-4. **Add pages at 1920×1080** with the `#EFEFEF` background (power-bi-pages).
-5. **Place the page anatomy** using the grid coordinates below, with fixed
-   visual names (power-bi-visuals). Use `--no-sync` on every write.
-6. **Write the text and shape recipes** into each decorative `visual.json`
-   (no CLI command sets textbox text or shape fill; edit the JSON directly).
-7. **Validate and reload:** `pbi report validate`, then `pbi report reload` once.
-8. **Run the checklist** at the end of this file before reporting back.
+## 1. Non-negotiables
 
-Language: match the user's request and source material (past work is in
-French). In French dashboards use French number formatting: `677 336`,
-`82,7 %`, `0,8591`, `1,85×`. For measures, use format strings such as
-`#,0` with the French culture, `0.0 %` and `0.0000`.
+1. **One page, one question.** Each page answers one question for one audience.
+   If the question can't be written in one sentence, the page isn't designed yet.
+2. **Five-second rule.** The status (good or bad, up or down, on target or not)
+   is readable in 5 s from the top-left KPI band.
+3. **No number without context.** Every KPI shows a comparison (vs previous year, budget or
+   target) and its unit and period.
+4. **Titles state measure, unit and period** (IBCS): "Chiffre d'affaires · M MAD · 2025 vs 2024".
+5. **Same thing, same look** (IBCS UNIFY). A scenario, measure or category has
+   one colour and one format across all pages.
+6. **Contrast first.** All text meets WCAG AA. Orange `#FF7900` **text**
+   appears only on black (`#111111`). On white or grey, orange is used only
+   for bars, lines and accent bars, never for text.
+7. **Never rely on colour alone.** Data labels, signs (+/−) and words carry the
+   meaning; colour reinforces it.
+8. **Truthful scales.** Bar and column axes start at zero. Charts that are
+   compared share one scale. No 3D, no dual axes with unrelated units, no pie
+   with more than 2 slices.
+9. **Budget:** at most **8 data visuals per page**, KPI cards included, and at most 2 slicers.
+   More is a second page or a drillthrough.
+10. **The `Orange Restricted` label is on every page and is never touched** (§13).
 
-## Design tokens
+## 2. Design process (do this before any command)
 
-| Token | Value | Use |
-|---|---|---|
-| Accent | `#FF7900` | Kicker topic, hero KPI values (max 2 per row), page number, key-metric series, takeaway stripe |
-| Ink | `#111111` | Headline, tile labels, visual titles, takeaway bar, secondary KPI values |
-| Body | `#555555` | Kicker, captions, axis labels, footer, secondary series |
-| Canvas | `#EFEFEF` | Page background, table grid lines, neutral cells |
-| Card | `#FFFFFF` | Every data visual's background (tile) |
-| Accent tint | `#FFF1E5` | Highlighted good/target cells in tables and matrices |
-| Stage colours | `#A8683A` `#9A9A9A` `#D9A400` | Only when stages have their own identity (Bronze/Silver/Gold) |
-| Font | `Arial` | Everything. Bold for titles and numbers, regular for body |
+1. **Brief.** Write down, and confirm with the user if it is unclear:
+   - the audience: executive, manager or analyst;
+   - the decision the page supports;
+   - the refresh cadence;
+   - the 3–4 KPIs;
+   - the comparison basis: PY, budget or target.
+2. **Classify the page:**
+   - *Strategic* (executive): KPIs and trends, few details, no tables.
+   - *Operational* (manager): KPIs, breakdowns and exceptions, plus one table of exceptions.
+   - *Analytical* (analyst): slicers, scatter or matrix, drillthrough.
+3. **Inventory the model.** Run `pbi --json table list`, `pbi --json measure list` and
+   `pbi --json column list -t <table>`. Create missing measures with format
+   strings (power-bi-modeling). Multi-line DAX goes through `-e -` and stdin, never inline.
+4. **Wireframe in text first.** List each zone (§6) with its visual type and
+   fields, and check it against the chart chooser (§7) and the budget (§1.9).
+5. **Build** in reading order (§12). Reading order becomes the keyboard tab order.
+6. **Review** with the scorecard in §14 before reporting back.
 
-**Forbidden:** rounded corners, shadows, gradients (except the conditional-
-formatting scale defined below), icons, emoji, photos (unless the user supplies
-them), visual headers and borders. Use flat rectangles only. Use orange sparingly: the kicker topic, at most 2
-hero values per KPI row, the key series of at most 2 charts per page, the
-takeaway stripe and the page number.
+## 3. Colour system
 
-### Type scale (Power BI points, on a 1920×1080 page)
-
-The deck is specified in px on a 1920 canvas. A dashboard is denser, so the
-hierarchy is kept but scaled down. No text is smaller than 12 pt.
-
-| Element | Size | Weight | Colour |
+| Token | Hex | Role | Allowed as text on |
 |---|---|---|---|
-| Kicker (UPPERCASE text) | 14 pt | bold | topic `#FF7900` · subtopic `#555555` |
-| Headline | 32 pt | bold | `#111111` |
-| Hero KPI value | 36 pt | bold | `#FF7900` (max 2 per row), others `#111111` |
-| KPI label | 14 pt | bold | `#111111` |
-| KPI caption / plain-language meaning | 12 pt | regular | `#555555` |
+| Orange (Accent) | `#FF7900` | Focus: the primary measure (AC), accent bars, insight stripe, page number, classification label | **Black only** (7.18:1) |
+| Ink | `#111111` | Titles, KPI values, body text, footer band, PL/target lines | White 18.9:1 · canvas 16.4:1 · tint 17.1:1 |
+| Body | `#555555` | Secondary text, axes, PY series | White 7.5:1 · canvas 6.5:1 |
+| Mid grey | `#9A9A9A` | Tertiary series and gridless context | Not for text (2.8:1) |
+| Canvas | `#EFEFEF` | Page background; text on black (16.4:1) | — |
+| Card | `#FFFFFF` | Every data tile | — |
+| Accent tint | `#FFF1E5` | Insight bar background, highlighted cells | — |
+| Stage colours | `#A8683A` `#D9A400` | Only for staged processes (Bronze/Gold) | — |
+
+**Semantic rules**
+- **Orange means "look here".** It is used for the primary measure (AC), the
+  accent bars of at most 2 focus KPIs per page, the insight stripe, the page number and the label.
+  Never use it for "bad" and never as decoration.
+- **Scenario notation (IBCS, adapted to the brand):**
+  - AC (actual) = `#FF7900`;
+  - PY (previous year) = `#555555`;
+  - PL/BU (plan or budget) = `#111111`, as a line or target marker;
+  - FC (forecast) = `#9A9A9A`, and always with data labels.
+  Apply the same mapping on every visual.
+- **Separating series:** `#FF7900` and `#9A9A9A` have the same lightness
+  (1.07:1), so colour-blind readers and greyscale prints cannot tell them apart. Never let
+  them be the only difference between two adjacent series. For two series use orange + `#555555`; for three,
+  orange + `#555555` + `#111111`.
+- **Variance:** show the sign (+/−) and the value; colour is optional. No red/green.
+  Unfavourable variances may be highlighted with the accent tint `#FFF1E5` in
+  tables.
+- **At most 4 colours in any chart.** Beyond that, use small multiples or "Others".
+
+## 4. Typography (Arial only; Power BI points on a 1920×1080 page)
+
+| Role | Size | Weight | Colour |
+|---|---|---|---|
+| Page title | 28 pt | bold | `#111111` |
+| Kicker (section · subsection, UPPERCASE) | 12 pt | bold | `#555555` |
+| KPI value | 32 pt | bold | `#111111` |
+| KPI label | 12 pt | bold | `#111111` |
+| KPI comparison | 12 pt | regular | `#555555` |
 | Visual title | 14 pt | bold | `#111111` |
-| Axis, data labels, table body | 12 pt | regular | `#555555` |
-| Table / matrix headers | 12 pt | bold | `#111111` |
-| Takeaway bar text | 18 pt | bold | `#FFFFFF`, key figure optional `#FF7900` |
-| Footer | 12 pt | regular | `#555555` |
-| Page number | 14 pt | bold | `#FF7900` |
+| Axis, data labels, legend, table body | 12 pt | regular | `#555555` |
+| Table headers | 12 pt | bold | `#111111` |
+| Insight text | 16 pt | bold | `#111111` on `#FFF1E5` |
+| Footer text | 12 pt | regular | `#EFEFEF` on `#111111` |
+| Page number | 14 pt | bold | `#FF7900` on `#111111` |
+| Orange Restricted label | 12 pt | bold | `#FF7900` on `#111111` (fixed by pbi-cli) |
 
-## Page anatomy (every dashboard page)
+Never go below 12 pt. Use sentence case for all titles; uppercase only for the kicker.
+At most 3 sizes in the body zone.
 
-1. **Kicker**: `TOPIC · SUBTOPIC` in uppercase, with the topic in orange.
-2. **Headline**: one sentence stating the conclusion in ≤ 12 words ("Le
-   modèle détecte 5 churners sur 6", not "Performance").
-3. **KPI row**: 3 or 4 white tiles (card visuals). Each tile shows a value,
-   a label and, optionally, a 12 pt caption with the plain-language meaning.
-4. **Body**: 2 or 3 white data visuals, one idea each.
-5. **Takeaway bar**: a black bar with a 12 px orange left stripe and one white bold
-   sentence giving the business implication.
-6. **Footer**: dashboard name · context · data date on the left, the
-   **Orange Restricted** classification label, and the two-digit page number
-   `01`, `02`… in bold orange on the right.
+## 5. Grid
 
-## Orange Restricted label (mandatory, read-only)
+The canvas is **1920×1080**, display option FitToPage. The grid is built on **8 pt**: outer margin
+**48**, gutter **16**, and every y coordinate is a multiple of 8. Readers scan in a **Z pattern**:
+status top-left, detail in the middle, the "so what" at the bottom.
 
-Every page of every dashboard carries the classification label
-**`Orange Restricted`**: Arial 12 pt bold, `#FF7900`, right-aligned in the footer
-slot, as a textbox named `cls_restricted`. It is **not** part of your design work,
-and you never write, edit, move, recolour, resize, hide, reword or delete it.
+```
+y   0 ┌────────────────────────────────────────────────────────────┐
+ 32   ▬ orange accent bar                         [slicer][slicer] │ HEADER
+ 48   KICKER · SUBSECTION                                          │
+ 72   Page title: measure · unit · period                          │
+152   [ KPI 1 ][ KPI 2 ][ KPI 3 ][ KPI 4 ]                         │ KPI BAND
+320   ┌──────── visual ────────┐┌──────── visual ────────┐         │ BODY
+      │                        ││                        │         │
+896   └────────────────────────┘└────────────────────────┘         │
+920   ▌ Insight: what it means and what to do                      │ INSIGHT
+1008 ███ footer · source · data as of ███ Orange Restricted ██ 01 ███│ FOOTER BAND
+1080 └────────────────────────────────────────────────────────────┘
+```
 
-- `pbi report add-page` inserts it automatically on every new page.
-- Every pbi-cli write command (`visual add/update/delete/bind/set-container`,
-  `format …`, `filters … --visual`, `calc-…`) refuses to target
-  `cls_restricted`, and the bulk commands skip it.
-- `pbi report validate` (and `--full`) fails when a page is missing the label or
-  its text, colour or visibility has been altered.
-- `pbi report apply-classification [PAGE]` restores the canonical label, on all
-  pages when PAGE is omitted. Run it on reports created by another tool and
-  whenever validation reports a label problem.
-- Never edit `visuals/cls_restricted/visual.json` by hand, and never place
-  another visual over the label's slot.
-- If the user asks to remove, rename, recolour or hide it, decline: it is a
-  mandatory classification marking that this toolkit locks. The label text and
-  colour are fixed in `pbi_cli/core/classification.py` and can only be changed
-  there by the toolkit's maintainers.
+## 6. Zones, components and exact positions
 
-## Layout grid (1920×1080, outer margin 64 px, gap 24 px)
+Positions are `x, y, w, h` in px. Use these names: they set the tab order and make
+reviews and bulk edits possible.
 
-Positions are `x, y, width, height` in pixels. Use these exact values and visual names.
+**Header (y 32–128)**
 
-| Name | Type | x | y | w | h |
+| Name | Component | x | y | w | h |
 |---|---|---|---|---|---|
-| `hdr_kicker` | textbox | 64 | 40 | 1792 | 40 |
-| `hdr_headline` | textbox | 64 | 80 | 1792 | 64 |
-| `kpi_1`…`kpi_4` (4 tiles) | card | 64 / 518 / 972 / 1426 | 168 | 430 | 152 |
-| `kpi_1`…`kpi_3` (3 tiles) | card | 64 / 669 / 1274 | 168 | 581 (last 582) | 152 |
-| `viz_1`, `viz_2` (halves) | chart/table | 64 / 972 | 344 | 884 | 572 |
-| `viz_1`…`viz_3` (thirds) | chart/table | 64 / 669 / 1274 | 344 | 581 (last 582) | 572 |
-| `viz_1` + `viz_2` (2/3 + 1/3) | chart/table | 64 / 1277 | 344 | 1189 / 579 | 572 |
-| `tk_bar` | shape `#111111` | 64 | 940 | 1792 | 72 |
-| `tk_stripe` | shape `#FF7900` | 64 | 940 | 12 | 72 |
-| `tk_text` | textbox | 100 | 940 | 1732 | 72 |
-| `ftr_left` | textbox | 64 | 1028 | 1180 | 36 |
-| `cls_restricted` | **auto, read-only** "Orange Restricted" | 1268 | 1028 | 364 | 36 |
-| `ftr_page` | textbox (right-aligned) | 1656 | 1028 | 200 | 36 |
+| `hdr_accent` | shape `#FF7900` (brand bar) | 48 | 32 | 96 | 8 |
+| `hdr_kicker` | textbox, 12 pt bold `#555555` UPPERCASE | 48 | 48 | 1264 | 24 |
+| `hdr_title` | textbox, 28 pt bold `#111111` | 48 | 72 | 1264 | 48 |
+| `slc_1`, `slc_2` | slicer (dropdown) | 1328 / 1608 | 48 | 264 | 80 |
 
-Optional KPI captions go in `kpi_n_cap` textboxes laid over the bottom of each
-tile: same x and width as the tile, y 284, h 32, added after the tile so they sit above it.
+Without slicers, `hdr_kicker` and `hdr_title` widen to w 1824. The title is the
+**page purpose, which is always true** ("Performance commerciale · M MAD · cumul
+annuel"). The message goes in the insight bar.
 
-**Slicers:** at most 2 per page. They go top-right in the header (`slc_1` x 1296,
-`slc_2` x 1588; y 48, w 268, h 88), and `hdr_kicker`/`hdr_headline` then shrink to
-w 1208. The theme renders slicers as dropdowns. Do not place slicers in the body.
+**KPI band (y 152–296)**: 3 or 4 tiles. Each tile is a value card, with a comparison card underneath and touching it.
 
-**Z-order:** `pbi visual add` stacks each new visual above the previous ones, so add
-`tk_bar` → `tk_stripe` → `tk_text`, and add each tile before its caption.
+| Layout | x positions | w | value card `kpi_n` | comparison `kpi_n_cmp` |
+|---|---|---|---|---|
+| 4 tiles | 48 / 508 / 968 / 1428 | 444 | y 152, h 112 | y 264, h 32 |
+| 3 tiles | 48 / 661 / 1274 | 597 (last 598) | y 152, h 112 | y 264, h 32 |
 
-## Approved visual types
+- The comparison card is bound to a text measure such as `"+4,2 % vs A-1"` or `"−1,3 pt vs objectif"`. Use a static textbox only if no measure can be created.
+- **Focus KPI accent:** for at most 2 tiles, add `kpi_n_accent`, an orange shape at the tile's x, y 152, w = tile width, h 8. It is added after the tile so it sits on top.
+- KPI values stay `#111111`. **Never colour a KPI value orange** (contrast 2.6:1).
 
-| Purpose | Use | Notes |
+**Body (y 320–896, h 576)**
+
+| Layout | x | w |
 |---|---|---|
-| KPI tile | `card` | Default value colour `#111111`; recolour max 2 hero tiles orange (recipe below) |
-| Ranking / comparison | `bar`, `clustered_bar` | Horizontal bars sorted descending (Desktop's default sort for a single measure) |
-| Trend over time | `line`, `column`, `area` | Key series bound first so it takes `#FF7900` |
-| Value + rate | `combo` | Columns = volume, line = rate |
-| Contribution / bridge | `waterfall` | Use the theme's colours as they are |
-| Correlation | `scatter` | Only for analytical pages |
-| Detail | `table`, `matrix` | Highlight target cells with the accent-tint rule |
-| Filtering | `slicer` | Header slots only |
-| Decoration | `textbox`, `shape` | Only for the anatomy elements above |
+| 2 halves `viz_1`, `viz_2` | 48 / 968 | 904 |
+| 3 thirds `viz_1`…`viz_3` | 48 / 661 / 1274 | 597 / 597 / 598 |
+| 2/3 + 1/3 | 48 / 1269 | 1205 / 603 |
+| 2×2 small multiples | 48 / 968; y 320 / 616 | 904, h 280 |
 
-**Not allowed unless the user explicitly asks:** pie/donut, gauge, treemap, ribbon,
-funnel, maps, KPI visual (`kpi`), images, action buttons, page navigators and
-custom visuals. Give the business reason, then offer the approved alternative:
-a bar chart instead of pie/donut/treemap, a card plus caption instead of a gauge or KPI visual.
+**Insight bar (y 920–984)**
 
-## The theme (apply once per report)
+| Name | Component | x | y | w | h |
+|---|---|---|---|---|---|
+| `ins_stripe` | shape `#FF7900` | 48 | 920 | 8 | 64 |
+| `ins_text` | card bound to an insight measure (dynamic), or a textbox; background `#FFF1E5`, 16 pt bold `#111111` | 56 | 920 | 1816 | 64 |
 
-Write this file exactly as shown, then run
+The insight is one sentence: *what happened + so what*. If the page has slicers
+or refreshes, the insight **must be dynamic** (a card bound to a DAX text measure),
+so it never contradicts the data on screen. A static insight is allowed only on
+a fixed snapshot, and its numbers come from `pbi dax execute`.
+
+**Footer band (y 1008–1080, full bleed)**
+
+| Name | Component | x | y | w | h |
+|---|---|---|---|---|---|
+| `ftr_band` | shape `#111111` | 0 | 1008 | 1920 | 72 |
+| `ftr_left` | textbox 12 pt `#EFEFEF`: dashboard · source · "données au JJ/MM/AAAA" | 48 | 1028 | 1196 | 36 |
+| `cls_restricted` | **automatic, read-only** "Orange Restricted" | 1268 | 1028 | 364 | 36 |
+| `ftr_page` | textbox 14 pt bold `#FF7900`, right-aligned: `01`, `02`… | 1672 | 1028 | 200 | 36 |
+
+## 7. Chart chooser
+
+| Question | Use | Rules |
+|---|---|---|
+| How are we doing vs PY/target? | `card` + comparison card | Value + comparison + unit, always |
+| Ranking / structure (categories) | `bar` (horizontal) | Sorted descending, data labels on, value axis hidden, ≤ 12 bars (Top N + "Autres") |
+| Evolution over periods | `column` (≤ 13 periods) or `line` (> 13 periods) | Time runs left → right; IBCS: columns for periods, lines for long series |
+| Actual vs plan over time | `combo` | AC as columns in orange, PL as a `#111111` line; one unit |
+| Bridge / contribution | `waterfall` | Start and end totals `#111111`, increases `#555555`, decreases orange with labels |
+| Two-measure relationship | `scatter` | Analytical pages only; label outliers |
+| Exceptions / detail | `table`, `matrix` | ≤ 7 columns, numbers right-aligned, highlight with the tint |
+| Composition of 2 parts | `bar` (100 %) or a sentence | Never pie or donut with more than 2 slices |
+
+**Not allowed unless the user explicitly asks:** pie/donut, gauge, treemap, ribbon, funnel,
+maps, the `kpi` visual, 3D, images, decorative icons, page navigators, action buttons.
+Explain why (legibility, comparison accuracy) and offer the alternative from the table above.
+
+**Data-ink:** gridlines off, axis titles off (the unit is in the visual title),
+the legend only when there are 2 or more series, at the top-left, or direct labels instead. No borders,
+shadows or rounded corners; the theme enforces this.
+
+## 8. Numbers and text
+
+- Match the user's language. **French:** `677 336`, `82,7 %`, `1,85×`, `12,4 M MAD`;
+  **English:** `677,336`, `82.7%`.
+- Use 3 significant digits on KPIs (`12,4 M`), at most 1 decimal on percentages, and
+  the same decimals throughout a column or axis.
+- Put the unit in the title, not on every label ("en M MAD"). Write negatives with a minus sign,
+  and variances with an explicit sign (`+4,2 %`, `−1,3 pt`).
+- Use dates in the reader's format (`JJ/MM/AAAA` in French). Periods: `T1 2025`, `janv. 2025`.
+- Use plain language in KPI labels ("Clients perdus", not "churn_flag_sum").
+
+## 9. Interaction
+
+- Slicers: at most 2, in the header slots, as dropdowns (the theme sets this). Use them only for dimensions
+  the audience really changes, such as period or region. Prefer page filters for fixed scope.
+- If a filter changes what the page shows, the scope must be visible in the
+  title or footer ("Top 10 produits", "30 derniers jours").
+- Cross-filtering stays on (default). Detail belongs in **drillthrough pages**
+  (hidden, same grid, no insight bar needed), not on the main page.
+- Every visual gets a tooltip-friendly title. Never hide meaning in hover-only content.
+
+## 10. Accessibility (WCAG 2.2 AA)
+
+- The contrast table in §3 is binding. Text sizes are ≥ 12 pt.
+- **Alt text on every data visual:** what it shows and the main takeaway (recipe in §12).
+- **Tab order = reading order.** pbi-cli sets tab order in creation order, so build
+  header → KPIs → body → insight → footer.
+- Line charts with 2 or more series need markers or direct labels. Bar charts need data labels.
+- Colour is never the only carrier of meaning (§1.7).
+
+## 11. The theme (apply once per report)
+
+Write the file exactly as shown, then run
 `pbi report --no-sync set-theme --file orange-dashboard-theme.json`:
 
 ```json
@@ -182,8 +266,13 @@ Write this file exactly as shown, then run
   "background": "#FFFFFF",
   "foreground": "#111111",
   "tableAccent": "#FF7900",
+  "good": "#555555",
+  "neutral": "#9A9A9A",
+  "bad": "#FF7900",
+  "minimum": "#FFFFFF",
+  "maximum": "#FF7900",
   "textClasses": {
-    "callout": { "fontSize": 36, "fontFace": "Arial", "color": "#111111" },
+    "callout": { "fontSize": 32, "fontFace": "Arial", "color": "#111111" },
     "title": { "fontSize": 14, "fontFace": "Arial", "color": "#111111" },
     "header": { "fontSize": 12, "fontFace": "Arial", "color": "#111111" },
     "label": { "fontSize": 12, "fontFace": "Arial", "color": "#555555" }
@@ -221,11 +310,25 @@ Write this file exactly as shown, then run
         "outspace": [{ "color": { "solid": { "color": "#EFEFEF" } }, "transparency": 0 }]
       }
     },
+    "barChart": { "*": { "labels": [{ "show": true }], "valueAxis": [{ "show": false }] } },
+    "clusteredBarChart": { "*": { "labels": [{ "show": true }], "valueAxis": [{ "show": false }] } },
+    "columnChart": { "*": { "labels": [{ "show": true }], "valueAxis": [{ "show": false }] } },
+    "clusteredColumnChart": { "*": { "labels": [{ "show": true }], "valueAxis": [{ "show": false }] } },
+    "waterfallChart": {
+      "*": {
+        "labels": [{ "show": true }],
+        "sentimentColors": [{
+          "increaseFill": { "solid": { "color": "#555555" } },
+          "decreaseFill": { "solid": { "color": "#FF7900" } },
+          "totalFill": { "solid": { "color": "#111111" } }
+        }]
+      }
+    },
     "card": {
       "*": {
         "title": [{ "show": false }],
-        "labels": [{ "fontFamily": "Arial", "fontSize": 36, "color": { "solid": { "color": "#111111" } } }],
-        "categoryLabels": [{ "show": true, "fontFamily": "Arial", "fontSize": 14, "color": { "solid": { "color": "#111111" } } }]
+        "labels": [{ "fontFamily": "Arial", "fontSize": 32, "color": { "solid": { "color": "#111111" } } }],
+        "categoryLabels": [{ "show": true, "fontFamily": "Arial", "fontSize": 12, "color": { "solid": { "color": "#111111" } } }]
       }
     },
     "tableEx": {
@@ -270,14 +373,15 @@ Write this file exactly as shown, then run
 Do not add `radius`, a top-level `page` key or `dropShadow.position` (see
 power-bi-themes). Never apply another theme to an Orange dashboard.
 
-## JSON recipes for decorative visuals
+## 12. Build recipes
 
 `pbi visual add` creates `definition/pages/<page>/visuals/<name>/visual.json`.
-For the elements below, replace the `"visual"` object in that file with the
-recipe, keeping `$schema`, `name` and `position` as they are.
-Then run `pbi report validate`.
+No CLI command sets textbox text, shape fill, card text styling or alt text.
+For those, edit the `"visual"` object in the file and keep `$schema`, `name`,
+`position` and any `query` written by `pbi visual bind`. Run `pbi report validate`
+after each batch.
 
-### Textbox (kicker, headline, takeaway text, footer, page number, captions)
+**Textbox** (kicker, title, static insight, footer text, page number):
 
 ```json
 "visual": {
@@ -287,8 +391,7 @@ Then run `pbi report validate`.
       "properties": {
         "paragraphs": [{
           "textRuns": [
-            { "value": "VENTES", "textStyle": { "fontFamily": "Arial", "fontSize": "14pt", "fontWeight": "bold", "color": "#FF7900" } },
-            { "value": " · PERFORMANCE RÉGIONALE", "textStyle": { "fontFamily": "Arial", "fontSize": "14pt", "fontWeight": "bold", "color": "#555555" } }
+            { "value": "Performance commerciale", "textStyle": { "fontFamily": "Arial", "fontSize": "28pt", "fontWeight": "bold", "color": "#111111" } }
           ]
         }]
       }
@@ -301,17 +404,11 @@ Then run `pbi report validate`.
 }
 ```
 
-Change the text runs per element, using the type-scale table:
-- **Headline:** one run, `32pt`, bold, `#111111`.
-- **Takeaway text:** `18pt`, bold, `#FFFFFF`. An optional middle run in `#FF7900` holds the key figure.
-- **Footer:** `12pt`, regular (omit `fontWeight`), `#555555`.
-- **Page number:** `14pt`, bold, `#FF7900`. Add `"horizontalTextAlignment": "right"` to the paragraph.
-- **KPI caption:** `12pt`, regular, `#555555`.
+Apply sizes and colours from §4. For the page number, add
+`"horizontalTextAlignment": "right"` to the paragraph.
 
-Text is static, so write the uppercase kicker as uppercase. Every number in it must
-come from a DAX result, and the footer states the data date.
-
-### Rectangle shape (takeaway bar `#111111`, stripe `#FF7900`)
+**Rectangle shape** (`hdr_accent`, `kpi_n_accent`, `ins_stripe` in `#FF7900`;
+`ftr_band` in `#111111`):
 
 ```json
 "visual": {
@@ -321,7 +418,7 @@ come from a DAX result, and the footer states the data date.
     "fill": [{
       "properties": {
         "show": { "expr": { "Literal": { "Value": "true" } } },
-        "fillColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#111111'" } } } } },
+        "fillColor": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FF7900'" } } } } },
         "transparency": { "expr": { "Literal": { "Value": "0D" } } }
       },
       "selector": { "id": "default" }
@@ -336,90 +433,126 @@ come from a DAX result, and the footer states the data date.
 }
 ```
 
-### Hero KPI tile in orange (max 2 per row)
-
-Add this inside the card's `"visual"` object. Keep the `query` that
-`pbi visual bind` wrote.
-
-```json
-"objects": {
-  "labels": [{ "properties": { "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FF7900'" } } } } } } }]
-}
-```
-
-### Secondary chart in grey (keeps orange rare)
-
-A single-series chart takes `#FF7900` from the theme. When a page already has
-two orange charts, add this inside the other charts' `"visual"` object:
+**Dynamic text card** (`kpi_n_cmp`, `ins_text`). Bind it to a text measure with
+`pbi visual bind <name> --page <page> --field "_Mesures[Insight Synthèse]"`,
+then add the following to its `"visual"` object. Use `16D` and the `#FFF1E5`
+background for the insight, and `12D` with `#555555` text and a `#FFFFFF`
+background for comparison cards.
 
 ```json
 "objects": {
-  "dataPoint": [{ "properties": { "fill": { "solid": { "color": { "expr": { "Literal": { "Value": "'#555555'" } } } } } } }]
+  "labels": [{ "properties": {
+    "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#111111'" } } } } },
+    "fontSize": { "expr": { "Literal": { "Value": "16D" } } },
+    "fontFamily": { "expr": { "Literal": { "Value": "'Arial'" } } }
+  } }],
+  "categoryLabels": [{ "properties": { "show": { "expr": { "Literal": { "Value": "false" } } } } }],
+  "wordWrap": [{ "properties": { "show": { "expr": { "Literal": { "Value": "true" } } } } }]
+},
+"visualContainerObjects": {
+  "background": [{ "properties": {
+    "show": { "expr": { "Literal": { "Value": "true" } } },
+    "color": { "solid": { "color": { "expr": { "Literal": { "Value": "'#FFF1E5'" } } } } },
+    "transparency": { "expr": { "Literal": { "Value": "0D" } } }
+  } }]
 }
 ```
 
-### Visual titles
+Example insight measure (save to `insight.dax`, then run
+`pbi measure create "Insight Synthèse" -t _Mesures -e - < insight.dax`):
 
-Each data visual gets a short title stating what it shows ("CA par région, en
-MAD"): `pbi visual --no-sync set-container viz_1 --page <page> --title "…"`.
+```
+VAR ac = [CA]
+VAR py = [CA A-1]
+VAR d  = DIVIDE ( ac - py, py )
+RETURN
+    "Le chiffre d'affaires " & IF ( d >= 0, "progresse de ", "recule de " )
+        & FORMAT ( ABS ( d ), "0.0 %" ) & " vs A-1 : "
+        & IF ( d >= 0, "maintenir l'effort sur les régions leaders.", "prioriser les régions en recul." )
+```
 
-## Conditional formatting (tables and matrices only)
+**Alt text.** Merge this into the visual's `visualContainerObjects`:
 
-- **Target or good cells:** `pbi format background-conditional … --color "#FFF1E5"`.
-  This uses the accent tint; the 8 px orange left border of the deck cannot be
-  drawn in a cell, so state the target in the visual title.
-- **Scales:** `pbi format background-gradient … --min-color "#FFFFFF" --max-color "#FF7900"`.
-  This is the only gradient allowed.
-- Red/green traffic lights are not part of the style. Use the accent tint for "good" and
-  leave everything else neutral.
+```json
+"general": [{ "properties": { "altText": { "expr": { "Literal": { "Value": "'Barres : CA 2025 par région, Casablanca en tête'" } } } } }]
+```
 
-## Writing rules
+**Secondary chart in grey** (keeps orange for the focus chart). Add this to the `"visual"` object:
 
-- Headline = the finding, ≤ 12 words. Takeaway = the business implication, in one sentence.
-- Translate technical metrics into plain language in the KPI captions ("5 churners sur 6", "1,7× meilleur que le hasard").
-- One idea per page; 3–4 KPI tiles; 2–3 body visuals. Never add a page that only
-  holds a table dump.
-- Page order: synthesis (KPIs) → detail pages → recommendations. Page numbers start at `01`.
+```json
+"objects": { "dataPoint": [{ "properties": { "fill": { "solid": { "color": { "expr": { "Literal": { "Value": "'#555555'" } } } } } } }] }
+```
 
-## Full build example
+**Visual title.** Every data visual gets one:
+`pbi visual --no-sync set-container viz_1 --page synthese --title "CA par région · M MAD · 2025"`.
+
+**Build sequence.** Building in reading order gives the keyboard tab order:
 
 ```bash
-pbi report create . --name "ChurnDashboard" --dataset-path "../Churn.SemanticModel"
-# write orange-dashboard-theme.json (above), then:
+pbi report create . --name "Ventes" --dataset-path "../Ventes.SemanticModel"
 pbi report --no-sync set-theme --file orange-dashboard-theme.json
 pbi report --no-sync add-page --display-name "Synthèse" --name synthese --width 1920 --height 1080
-pbi report --no-sync set-background synthese --color "#EFEFEF"
+pbi report --no-sync set-background synthese --color "#EFEFEF"   # label cls_restricted is added automatically
 
-V="pbi visual --no-sync"
-$V add --page synthese --type textbox --name hdr_kicker   --x 64 --y 40 --width 1792 --height 40
-$V add --page synthese --type textbox --name hdr_headline --x 64 --y 80 --width 1792 --height 64
-for i in 1 2 3 4; do x=$((64 + (i-1)*454)); \
-  $V add --page synthese --type card --name kpi_$i --x $x --y 168 --width 430 --height 152; done
-$V add --page synthese --type bar  --name viz_1 --x 64  --y 344 --width 884 --height 572
-$V add --page synthese --type line --name viz_2 --x 972 --y 344 --width 884 --height 572
-$V add --page synthese --type shape   --name tk_bar    --x 64  --y 940  --width 1792 --height 72
-$V add --page synthese --type shape   --name tk_stripe --x 64  --y 940  --width 12   --height 72
-$V add --page synthese --type textbox --name tk_text   --x 100 --y 940  --width 1732 --height 72
-$V add --page synthese --type textbox --name ftr_left  --x 64  --y 1028 --width 1180 --height 36
-# cls_restricted ("Orange Restricted") was already added by add-page -- never touch it
-$V add --page synthese --type textbox --name ftr_page  --x 1656 --y 1028 --width 200 --height 36
-
-$V bind kpi_1 --page synthese --field "Churn[Recall]"
-$V bind viz_1 --page synthese --category "Region[Name]" --value "Churn[Churners]"
-$V set-container viz_1 --page synthese --title "Churners détectés par région"
-# then: write the textbox/shape recipes into the decorative visual.json files,
-# recolour max 2 hero tiles, and run:
-pbi report validate
+V="pbi visual --no-sync"; P="--page synthese"
+$V add $P --type shape   --name hdr_accent --x 48 --y 32 --width 96   --height 8
+$V add $P --type textbox --name hdr_kicker --x 48 --y 48 --width 1264 --height 24
+$V add $P --type textbox --name hdr_title  --x 48 --y 72 --width 1264 --height 48
+$V add $P --type slicer  --name slc_1 --x 1328 --y 48 --width 264 --height 80
+for i in 1 2 3 4; do x=$((48 + (i-1)*460))
+  $V add $P --type card --name kpi_$i     --x $x --y 152 --width 444 --height 112
+  $V add $P --type card --name kpi_${i}_cmp --x $x --y 264 --width 444 --height 32
+done
+$V add $P --type shape --name kpi_1_accent --x 48 --y 152 --width 444 --height 8
+$V add $P --type bar   --name viz_1 --x 48  --y 320 --width 904 --height 576
+$V add $P --type combo --name viz_2 --x 968 --y 320 --width 904 --height 576
+$V add $P --type shape --name ins_stripe --x 48 --y 920 --width 8    --height 64
+$V add $P --type card  --name ins_text   --x 56 --y 920 --width 1816 --height 64
+$V add $P --type shape   --name ftr_band --x 0    --y 1008 --width 1920 --height 72
+$V add $P --type textbox --name ftr_left --x 48   --y 1028 --width 1196 --height 36
+$V add $P --type textbox --name ftr_page --x 1672 --y 1028 --width 200  --height 36
+# bind data, titles, then the JSON recipes; finally:
+pbi report validate --full
 pbi report reload
 ```
 
-## Checklist before reporting back
+## 13. Orange Restricted label (mandatory, read-only)
 
-- [ ] Theme "Orange Dashboard" applied (`pbi report get-theme`); no other theme.
-- [ ] Every page is 1920×1080 with an `#EFEFEF` background.
-- [ ] Every page has a kicker, a conclusion headline, KPI row, body, takeaway bar, footer and page number.
-- [ ] Every page shows the untouched **Orange Restricted** label in `#FF7900` (`pbi report validate` enforces it).
-- [ ] At most 2 orange KPI values per row and at most 2 orange charts per page.
-- [ ] Only approved visual types are used, and every data visual has a title.
-- [ ] Every number in the text matches a `pbi dax execute` result; French formatting is used in French dashboards.
-- [ ] `pbi report validate` passes, and the report opened in Desktop after `pbi report reload`.
+Every page carries the classification label **`Orange Restricted`** (Arial 12 pt
+bold, `#FF7900`), a textbox named `cls_restricted` in the footer band at
+x 1268, y 1028, 364×36. On the black band it meets contrast (7.18:1).
+
+- `pbi report add-page` inserts it automatically, and it always stays above other visuals.
+- Every pbi-cli write command (`visual add/update/delete/bind/set-container`,
+  `format …`, `filters … --visual`, `calc-…`) refuses `cls_restricted`; the
+  bulk commands skip it.
+- `pbi report validate` (and `--full`) fails if a page lacks the label or its
+  text, colour, visibility or size changed. `pbi report apply-classification [PAGE]`
+  restores it. Use that command on reports created elsewhere.
+- Never edit `visuals/cls_restricted/visual.json` by hand, and never put a visual over
+  its slot.
+- If the user asks to remove, rename, recolour or hide it, decline: it is a mandatory
+  classification marking. It can only be changed in
+  `pbi_cli/core/classification.py` by the toolkit's maintainers.
+
+## 14. Design review scorecard
+
+Score each line as pass or fail before reporting back, and report any failures with a fix.
+Use the same scorecard when the user asks for a review of an existing dashboard.
+
+| # | Check | Standard |
+|---|---|---|
+| 1 | One question per page; the title states measure · unit · period | IBCS SAY / EXPRESS |
+| 2 | Status readable in 5 s from the KPI band; every KPI has a comparison | Few |
+| 3 | ≤ 8 data visuals and ≤ 2 slicers per page | Microsoft guidance |
+| 4 | Positions match the grid in §6; nothing overlaps; 48 margin and 16 gutter | Orange grid |
+| 5 | Only approved chart types; bars sorted; zero-based axes; ≤ 4 colours | IBCS / Tufte |
+| 6 | Scenario colours consistent (AC orange, PY `#555555`, PL `#111111`) | IBCS UNIFY |
+| 7 | No orange text outside the black band; all text ≥ 12 pt | WCAG 1.4.3 |
+| 8 | Meaning never by colour alone; labels or signs present | WCAG 1.4.1 / 1.4.11 |
+| 9 | Alt text on every data visual; build order = reading order | WCAG / Microsoft |
+| 10 | Numbers in the user's locale; units in titles; consistent decimals | IBCS CONDENSE |
+| 11 | Insight is dynamic when the page has slicers; numbers verified by DAX | Truthfulness |
+| 12 | Orange theme applied (`pbi --json report get-theme`) | Brand |
+| 13 | `Orange Restricted` present and untouched on every page | Classification |
+| 14 | `pbi report validate --full` passes; report opens after `pbi report reload` | Technical |

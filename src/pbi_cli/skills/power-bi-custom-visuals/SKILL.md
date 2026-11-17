@@ -180,7 +180,7 @@ built-in visuals there (full rules in power-bi-orange-dashboard):
   animations. Horizontal bars are drawn on a `#EFEFEF` track, sorted
   descending, with the key bar and its value in `#FF7900` and the others in
   `#555555` with `#111111` values.
-- **Size:** render well inside the grid slots (body half 884×572, third 581×572).
+- **Size:** render well inside the grid slots (body half 904×576, third 597×576, 2×2 cell 904×280).
 
 State these constraints in the Plan step, and add them to the project's
 AGENTS.md so every later iteration keeps them.

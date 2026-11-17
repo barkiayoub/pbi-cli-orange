@@ -23,9 +23,9 @@ Every visual belongs to an Orange-style dashboard. The full rules are in
 **power-bi-orange-dashboard**; the essentials for this skill are:
 
 - **Always pass explicit `--name`, `--x`, `--y`, `--width`, `--height`** taken
-  from the dashboard grid. Use the names `hdr_kicker`, `hdr_headline`,
-  `kpi_1`…`kpi_4`, `viz_1`…`viz_3`, `tk_bar`, `tk_stripe`, `tk_text`,
-  `ftr_left`, `ftr_page`, `slc_1`, `slc_2`. Never rely on the default
+  from the dashboard grid. Use the names `hdr_accent`, `hdr_kicker`,
+  `hdr_title`, `kpi_1`…`kpi_4`, `kpi_n_cmp`, `kpi_n_accent`, `viz_1`…`viz_3`,
+  `ins_stripe`, `ins_text`, `ftr_band`, `ftr_left`, `ftr_page`, `slc_1`, `slc_2`. Never rely on the default
   auto-placement.
 - **Use only approved types:** card (KPI tiles), bar, clustered_bar, column,
   line, area, combo, waterfall, scatter, table, matrix, slicer (header slots only),
@@ -34,7 +34,8 @@ Every visual belongs to an Orange-style dashboard. The full rules are in
   ribbon, funnel, maps, kpi, image, action_button and page_navigator. Offer a bar
   chart instead of a pie/donut/treemap, and a card with a caption instead of a gauge or KPI visual.
 - **Colours come from the Orange theme.** The key measure is bound first, so it
-  gets `#FF7900`. Allow at most 2 orange KPI values per row and 2 orange charts per page; the
+  gets `#FF7900`. KPI values are never orange (contrast); at most 2 focus KPIs get an
+  orange accent bar and at most 2 charts per page stay orange; the
   JSON recipes in power-bi-orange-dashboard recolour the rest to `#555555`.
 - **Every data visual gets a title** that says what it shows, via `set-container --title`.
 - **Textbox text and shape fill are not exposed by the CLI.** Write them into
@@ -48,15 +49,15 @@ Every visual belongs to an Orange-style dashboard. The full rules are in
 ```bash
 # Add by alias (pbi-cli resolves to the PBIR type), always on the grid
 pbi visual add --page synthese --type card --name kpi_1 \
-    --x 64 --y 168 --width 430 --height 152
+    --x 48 --y 152 --width 444 --height 112
 
 # Body visual: left half of the body row
 pbi visual add --page synthese --type bar --name viz_1 \
-    --x 64 --y 344 --width 884 --height 572
+    --x 48 --y 320 --width 904 --height 576
 
 # Body visual: right half
 pbi visual add --page synthese --type combo --name viz_2 \
-    --x 972 --y 344 --width 884 --height 572
+    --x 968 --y 320 --width 904 --height 576
 ```
 
 Each visual is created as a folder with a `visual.json` file inside the page's
@@ -222,7 +223,7 @@ pbi visual bulk-bind --page overview --type barChart \
     --category "Date[Month]" --value "Sales[Revenue]"
 
 # Re-apply the Orange KPI tile size to every KPI tile
-pbi visual bulk-update --page synthese --name-pattern "kpi_*" --height 152 --y 168
+pbi visual bulk-update --page synthese --name-pattern "kpi_[0-9]" --height 112 --y 152
 
 # Hide all visuals matching a pattern
 pbi visual bulk-update --page overview --name-pattern "Temp_*" --hidden
@@ -316,9 +317,9 @@ Use `--no-sync` on the `visual` command group to batch all changes, then call
 
 ```bash
 # Suppress sync while building visuals (Orange grid positions)
-pbi visual --no-sync add --page synthese --type card --name kpi_1 --x 64 --y 168 --width 430 --height 152
+pbi visual --no-sync add --page synthese --type card --name kpi_1 --x 48 --y 152 --width 444 --height 112
 pbi visual --no-sync bind kpi_1 --page synthese --field "Sales[Total Revenue]"
-pbi visual --no-sync add --page synthese --type bar --name viz_1 --x 64 --y 344 --width 884 --height 572
+pbi visual --no-sync add --page synthese --type bar --name viz_1 --x 48 --y 320 --width 904 --height 576
 pbi visual --no-sync bind viz_1 --page synthese --category "Product[Category]" --value "Sales[Revenue]"
 pbi visual --no-sync set-container viz_1 --page synthese --title "CA par catégorie"
 
